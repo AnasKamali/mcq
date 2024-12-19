@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="jquery-3.6.0.min.js"></script>
+  <style>
+    /* Font-face definition */
+    @font-face {
+      font-family: "myFirstFont";
+      src: url("KrutiDev010.woff");
+    }
+    .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 80%;
+            text-align: center;
+        }
+    /* Apply the font to the keyboard */
+    .keyboard {
+      display: inline-block;
+      background: #f3f3f3;
+      padding: 10px;
+      margin-top: 30px;
+      border-radius: 5px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      font-family: "myFirstFont", Arial, sans-serif;
+      /* Use the custom font */
+    }
+
+    .row {
+      display: flex;
+      margin: 5px 0;
+      list-style: none;
+      padding: 0;
+      /* justify-content: center; */
+    }
+
+    .key {
+      padding: 10px 15px;
+      margin: 3px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      text-align: center;
+      font-size: 14px;
+      background: #fff;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: background 0.3s;
+      font-family: "myFirstFont", Arial, sans-serif;
+      /* Use the custom font for keys */
+    }
+
+
+    .key.special {
+      font-weight: bold;
+      background: #e6e6e6;
+      font-family: Arial, sans-serif;
+    }
+
+    .key:hover {
+      background: #d6d6d6;
+    }
+
+    .key.special:hover {
+      background: #c0c0c0;
+    }
+
+    .highlight {
+      background-color: yellow !important;
+    }
+    .highlight:hover {
+      background-color: rgb(177, 177, 61) !important;
+    }
+
+    .typeText {
+      font-family: "myFirstFont", Arial, sans-serif;
+    }
+    #pattern{
+      display: inline-block;
+      background: #f3f3f3;
+      padding: 10px;
+      /* margin-top: 30px; */
+      border-radius: 5px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      font-family: "myFirstFont", Arial, sans-serif;
+      font-size: xxx-large;
+    }
+    .todo{
+      color: white;
+      background-color: green;
+      font-weight: normal;
+      /* font-size: 2em;  */
+      text-decoration: blink;
+      padding: 10px;
+      display: inline-block;;
+    }
+    .future{
+      color: gray;
+    }
+    .space{
+      width: 30%;
+    }
+    .big	{
+      text-align: center;
+      font-size: 2em; 
+      height: 74px; 
+      width: 801px; 
+      border: 2px solid #080808; 
+      margin: 15px auto 0;
+      /* margin-bottom: -9px; */
+      border-radius: 5px;
+      /* float: left; */
+      margin-left: 40px;
+    }
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+    .stats div {
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .active {
+      background-color: lightgreen;
+    }
+
+    .inactive {
+      background-color: lightcoral;
+    }
+    .fn {height: 26px; width: 46px;}
+    #delete {width: 72px;}
+    #tab {width: 72px;}
+    #caps {width: 85px;}
+    #enter {width: 85px;}
+    .shiftleft, .shiftright {width: 112px;}
+    #fn, #control, .option, .command, #code32 {height: 49px;}
+
+    #control {width: 56px;}
+    .option {width: 46px;}
+    .command {width: 67px;}
+    #code32 {width: 226px;}
+
+    #left img, #up img, #down img, #right img {border: none;}
+    ul ol {list-style-type: none;}
+    #down {height: 23px;}
+    #up, #left, #right {height: 24px;}
+    #left, #right {margin: 30px 5px 5px;}
+    #left:active, #right:active {margin: 32px 5px 3px;}
+    #up {margin: 5px 5px 1px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px;}
+    #up:active {margin: 8px 5px -2px;}
+    #down {margin: 0 5px 5px; border-top-left-radius: 0px; border-top-right-radius: 0px;}
+    #down:Active {margin: 3px 5px 4px;}
+
+    #nextButton {
+      
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Typing Course</h1>
+    <p>Type the text below and check your stats.</p>
+    <button id="nextButton">Next</button>
+    <div class="stats">
+      <div>Speed: <span id="speed">0</span> WPM</div>
+      <div>Accuracy: <span id="accuracy">0</span>%</div>
+      <div>Mistakes: <span id="mistakes">0</span></div>
+    </div>
+    <div id="pattern" class="big inactive" >
+      
+    </div>
+    <div id="infoi" style="background-image: url(h.png);"><!--<img src="image/bottom.png"/>--></div>
+    <div class="keyboard">
+      <!-- Row 1 -->
+      <ul class="row">
+        <li class="key special">Esc</li>
+        <li class="key">F1</li>
+        <li class="key">F2</li>
+        <li class="key">F3</li>
+        <li class="key">F4</li>
+        <li class="key">F5</li>
+        <li class="key">F6</li>
+        <li class="key">F7</li>
+        <li class="key">F8</li>
+        <li class="key">F9</li>
+        <li class="key">F10</li>
+        <li class="key">F11</li>
+        <li class="key">F12</li>
+      </ul>
+
+      <!-- Row 2 -->
+      <ul class="row">
+        <li class="key special">~<br>`</li>
+        <li class="key char">1<br>!</li>
+        <li class="key char">2<br>@</li>
+        <li class="key char">3<br>#</li>
+        <li class="key char">4<br>$</li>
+        <li class="key char">5<br>%</li>
+        <li class="key char">6<br>^</li>
+        <li class="key char">7<br>&amp;</li>
+        <li class="key char">8<br>*</li>
+        <li class="key char">9<br>(</li>
+        <li class="key char">0<br>)</li>
+        <li class="key char">-<br>_</li>
+        <li class="key char">=<br>+</li>
+        <li class="key special" id="delete">Backspace</li>
+      </ul>
+
+      <!-- Row 3 -->
+      <ul class="row">
+        <li class="key special" id="tab">Tab</li>
+        <li class="key char">Q<br>q</li>
+        <li class="key char">W<br>w</li>
+        <li class="key char">E<br>e</li>
+        <li class="key char">R<br>r</li>
+        <li class="key char">T<br>t</li>
+        <li class="key char">Y<br>y</li>
+        <li class="key char">U<br>u</li>
+        <li class="key char">I<br>i</li>
+        <li class="key char">O<br>o</li>
+        <li class="key char">P<br>p</li>
+        <li class="key char">[<br>{</li>
+        <li class="key char">]<br>}</li>
+        <li class="key char">\<br>|</li>
+      </ul>
+
+      <!-- Row 4 -->
+      <ul class="row">
+        <li class="key special" id="caps">Caps Lock</li>
+        <li class="key char">A<br>a</li>
+        <li class="key char">S<br>s</li>
+        <li class="key char">D<br>d</li>
+        <li class="key char">F<br>f</li>
+        <li class="key char">G<br>g</li>
+        <li class="key char">H<br>h</li>
+        <li class="key char">J<br>j</li>
+        <li class="key char">K<br>k</li>
+        <li class="key char">L<br>l</li>
+        <li class="key char">;<br>:</li>
+        <li class="key char">'<br>"</li>
+        <li class="key special" id="enter">Enter</li>
+      </ul>
+
+      <!-- Row 5 -->
+      <ul class="row">
+        <li class="key special shiftleft">Shift</li>
+        <li class="key char">Z<br>z</li>
+        <li class="key char">X<br>x</li>
+        <li class="key char">C<br>c</li>
+        <li class="key char">V<br>v</li>
+        <li class="key char">B<br>b</li>
+        <li class="key char">N<br>n</li>
+        <li class="key char">M<br>m</li>
+        <li class="key char">,<br>&lt;</li>
+        <li class="key char">.<br>&gt;</li>
+        <li class="key char">/<br>?</li>
+        <li class="key special shiftleft">Shift</li>
+      </ul>
+
+      <!-- Row 6 -->
+      <ul class="row">
+        <li class="key special">Ctrl</li>
+        <li class="key special">FN</li>
+        <li class="key special">WND</li>
+        <li class="key special">Alt</li>
+        <li class="key char special space">                        </li>
+        <li class="key special">Alt</li>
+        <li class="key special">WND</li>
+        <li class="key special">FN</li>
+        <li class="key special">Ctrl</li>
+      </ul>
+    </div>
+  </div>
+  <script>
+    var patternClicked = false;
+    let sampleText = "";
+    const typingArea = document.getElementById('typingArea');
+    const speedEl = document.getElementById('speed');
+    const accuracyEl = document.getElementById('accuracy');
+    const mistakesEl = document.getElementById('mistakes');
+
+    let startTime = null;
+    let timer = null;
+    let mistakes = 0;
+    let typedChars = 0;
+    let errors = 0; 
+    let characters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', ' ']; // Example character list
+    let textLength = 2; // Desired text length
+    let text = "          ,d ckj ,d Hkyk vkneh unh fdukjs";
+    
+    function wrapTextInSpans() {
+      // Get the text content of the div
+      text = generateTextFromCharacters(characters, textLength); 
+      mistakesEl.textContent = 0;
+      accuracyEl.textContent = 0;
+      startTime = null;
+      timer = null;
+      mistakes = 0;
+      typedChars = 0;
+      errors = 0; 
+      // Get the div element
+      const div = document.getElementById("pattern");
+      
+      
+
+      // Clear the existing content
+      div.innerHTML = "";
+      // Create a new h1 element
+      const newH1 = document.createElement('div');
+
+      // Set content for the h1 element
+      newH1.textContent = "टाइप! शुरू करने के लिए बॉक्स पर क्लिक करें।";
+
+      // Optionally set some styles or attributes
+      newH1.id = 'startMessage'; // Add an ID if needed
+      
+      // Append the h1 element to the div
+      div.appendChild(newH1);
+      const wrapper = document.createElement('div');
+      wrapper.style.display = 'none'; 
+      wrapper.id = 'typeText';
+      text.split("").forEach(char => {
+          const span = document.createElement("span");
+          span.textContent = char;
+          span.className = "future"; // Set the character as text
+          wrapper.appendChild(span);
+      });
+      div.appendChild(wrapper);
+      sampleText=$('.future').text();
+      $('.future').first().toggleClass('todo');
+      $('.future').first().toggleClass('future');
+      $('#startMessage').css('font-size', 'medium');
+      
+    }
+
+    // Call the function
+    wrapTextInSpans();
+
+    function filterCode(code) { //from key press as ascii char code (0 to ignore)
+      if ((code==13)||(code==16)) return code; //enter and shift are allowed
+      if (code<32) return 0;
+      if (code>=127) return 0;
+      return code;
+    }
+    
+    
+    
+    $(document).ready(function () {
+      $('#nextButton').click(function() {
+        wrapTextInSpans();
+        nextKey();
+    });
+      nextKey();
+      $('#pattern').on('click', function () {
+        $('#pattern').addClass('active').removeClass('inactive');
+        $('#startMessage').hide();
+        $('#typeText').show();
+        patternClicked= true;
+        
+      }); 
+    // Deactivate the box when clicking outside
+      $(document).on('click', function () {
+        if(false === patternClicked){
+          $('#pattern').addClass('inactive').removeClass('active');
+          $('#startMessage').show();
+          $('#typeText').hide();
+        }else{
+          patternClicked = false;
+        }
+      });
+      // Listen for keydown events
+      $(document).on('keypress', function (event) {
+        if($('.todo').length==0){
+          clearInterval(timer);
+          $('#nextButton').show(); 
+        }
+        if($('.todo').length>0 && $('#pattern').attr('class')==='big active'){
+          if (!startTime) {
+            startTime = new Date();
+            timer = setInterval(updateSpeed, 1000);
+          }
+          var e = (window.event) ? window.event : evt; //#b
+          var pressed = 0;
+          var wc = -1;
+          var kc = -1;
+          var cc = -1;
+
+
+          if (typeof(e.keyCode)!="undefined") kc = e.keyCode; //ie
+          if (typeof(e.charCode)!="undefined") cc = e.charCode; //firefox
+          if (typeof(e.which)!="undefined") wc = e.which; 
+          if ((kc>=0)&&(cc>=0)) { //firefox
+            pressed = cc; 
+          }
+          else if (kc>=0) pressed = kc; //ie
+          else if (wc>=0) pressed = wc; //old mozilla
+
+          const pressedKey = String.fromCharCode(event.which) // Get key and make it uppercase
+          console.log($('.todo').text().charCodeAt(0));
+          console.log("event which::"+event.which );
+          console.log($('.todo').text().charCodeAt(0)===event.which)
+          //check for pressed key match highlighted char
+          if($('.todo').text().charCodeAt(0)===event.which){
+            $('.todo').addClass('done');
+            $('.todo').removeClass('todo');
+            $('.future').first().toggleClass('todo');
+            // $('.future').first().addClass('todo');
+            $('.future').first().toggleClass('future');
+            nextKey();
+          }else{
+            errors++;
+            mistakesEl.textContent = errors;
+          }
+        }
+        const currentText = $('.done').text();
+        typedChars = currentText.length;
+        if(currentText.length > 0){
+          updateAccuracy(currentText);
+        }
+        
+      });
+    });
+    function calculateMistakes(currentText) {
+      let errors = 0;
+      for (let i = 0; i < currentText.length; i++) {
+        if (currentText[i] !== sampleText[i]) {
+            errors++;
+        }
+      }
+      return errors;
+    }
+
+    function updateAccuracy(currentText) {
+      const correctChars = currentText.length - errors;
+      const accuracy = (correctChars / currentText.length) * 100 || 100;
+      accuracyEl.textContent = accuracy.toFixed(2);
+    }
+
+    function updateSpeed() {
+      const elapsedTime = (new Date() - startTime) / 1000 / 60; // in minutes
+      const wordsTyped = typedChars / 5; // average word length
+      const wpm = wordsTyped / elapsedTime || 0;
+      speedEl.textContent = Math.floor(wpm);
+    }
+
+    function nextKey(){
+      $('li').removeClass('highlight');
+        if($('.todo').length>0){
+          console.log($('.todo').text());
+          $('li.char').each(function () {
+            if ($(this).text().includes($('.todo').text())) {
+              $(this).addClass('highlight');
+            }
+          });
+      }
+    }
+
+    function generateTextFromCharacters(characterList, textLength) {
+      let generatedText = "";
+      for (let i = 0; i < textLength; i++) {
+          const randomIndex = Math.floor(Math.random() * characterList.length);
+          generatedText += characterList[randomIndex];
+      }
+      // Update the target element with the generated text
+      return generatedText;
+    }
+
+    
+  </script>
+
+
+</body>
+
+</html>
